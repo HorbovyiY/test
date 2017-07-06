@@ -1,0 +1,29 @@
+<?php
+function get_prev_id($id){
+    $query="SELECT * FROM `table` WHERE `table`.`id`=".$id;
+    $q=mysqli_query($_POST["link"],$query);
+    $res=mysqli_fetch_assoc($q);
+    $prev_id=$res['prev_id'];
+    return $prev_id;
+}
+
+function add ($title, $content, $prev_id){
+    $query="INSERT INTO `table` (`title`, `content`, `prev_id`) VALUES ('".htmlspecialchars($title)."', '".htmlspecialchars($content)."', '".htmlspecialchars($prev_id)."');";
+    mysqli_query($_POST['link'],$query) or die("Не вдалось додати запис");
+    echo "Запис успішно додано!";
+}
+
+function update ($id, $title, $content){
+    $query="UPDATE `table` SET `title` = '".htmlspecialchars($title)."', `content` = '".htmlspecialchars($content)."' WHERE `table`.`id` =".$id;
+    mysqli_query($_POST['link'],$query) or die("Не вдалось змінити запис");
+    echo "Запис успішно змінено!";
+}
+
+function delete ($id){
+    $query="UPDATE `table` SET `prev_id` = '".get_prev_id($id)."' WHERE `table`.`prev_id` =".$id;
+    mysqli_query($_POST['link'],$query) or die("Не вдалось видалити запис");
+
+    $query="DELETE FROM `table` WHERE `table`.`id` = ".$id;
+    mysqli_query($_POST['link'],$query) or die("Не вдалось видалити запис");
+    echo "Запис під номером ".$id." успішно видалено!";
+}
